@@ -34,8 +34,14 @@ module ActionController
       #      has_mobile_fu false
       #    end
       #
-      def has_mobile_fu(set_request_format = true)
+      def has_mobile_fu(options = {})
         include ActionController::MobileFu::InstanceMethods
+
+        set_request_format = options.delete(:set_request_format) || true
+
+        before_filter do
+          @excluded_devices = options.delete(:exclude)
+        end
 
         before_filter :set_request_format if set_request_format
 
@@ -82,7 +88,7 @@ module ActionController
       # the device making the request is matched to a device in our regex.
 
       def is_mobile_device?
-        !!mobile_device
+        (!@excluded_devices.blank? && is_device?(@excluded_devices)) ? false : !!mobile_device
       end
 
       def mobile_device

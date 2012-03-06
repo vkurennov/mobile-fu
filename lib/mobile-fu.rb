@@ -40,7 +40,7 @@ module ActionController
         set_request_format = options.delete(:set_request_format) || true
 
         before_filter do
-          @excluded_devices = options(:exclude)
+          @excluded_devices = options[:exclude]
         end
 
         before_filter :set_request_format if set_request_format
